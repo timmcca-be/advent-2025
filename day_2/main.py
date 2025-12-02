@@ -27,33 +27,25 @@ def solve_part_1(input_lines):
     return result
 
 def solve_part_2(input_lines):
-    result = 0
+    invalid_ids = set()
     for range_str in input_lines[0].split(","):
         [minimum_str, maximum_str] = range_str.split("-")
         minimum = int(minimum_str)
         maximum = int(maximum_str)
 
-        for i in range(minimum, maximum):
-            current_str = str(i)
-            for divisor in range(1, len(current_str) // 2 + 1):
-                if len(current_str) % divisor != 0:
-                    continue
-
-                ref = current_str[:divisor]
-                is_valid = True
-                for position in range(divisor, len(current_str), divisor):
-                    is_valid = (
-                        is_valid and
-                        current_str[position:position+divisor] == ref
-                    )
-                    if not is_valid:
-                        break
-
-                if is_valid:
-                    result += i
+        atom = 1
+        while int(str(atom) + str(atom)) <= maximum:
+            agg = str(atom) + str(atom)
+            while True:
+                current = int(agg)
+                if current > maximum:
                     break
+                if current >= minimum:
+                    invalid_ids.add(current)
+                agg += str(atom)
+            atom += 1
 
-    return result
+    return sum(invalid_ids)
 
 from pathlib import Path
 
