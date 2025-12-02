@@ -1,5 +1,3 @@
-import re
-
 def solve_part_1(input_lines):
     result = 0
     for range_str in input_lines[0].split(","):
