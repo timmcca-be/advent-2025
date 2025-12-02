@@ -27,35 +27,23 @@ def solve_part_1(input_lines):
     return result
 
 def solve_part_2(input_lines):
-    ranges = []
-    for range_str in input_lines[0].split(","):
-        [minimum, maximum] = range_str.split("-")
-        ranges.append((int(minimum), int(maximum)))
-    ranges.sort(key=lambda r: r[0])
-
     invalid_ids = set()
-    atom = 1
-    while True:
-        agg = str(atom) + str(atom)
-        range_index = 0
+    for range_str in input_lines[0].split(","):
+        [minimum_str, maximum_str] = range_str.split("-")
+        minimum = int(minimum_str)
+        maximum = int(maximum_str)
 
-        initial = int(agg)
-        while range_index < len(ranges) and initial > ranges[range_index][1]:
-            range_index += 1
-        if range_index == len(ranges):
-            break
-
-        while range_index < len(ranges):
-            current = int(agg)
-            while range_index < len(ranges) and current > ranges[range_index][1]:
-                range_index += 1
-            if range_index == len(ranges):
-                break
-            if current >= ranges[range_index][0]:
-                invalid_ids.add(current)
-            agg += str(atom)
-
-        atom += 1
+        atom = 1
+        while int(str(atom) + str(atom)) <= maximum:
+            agg = str(atom) + str(atom)
+            while True:
+                current = int(agg)
+                if current > maximum:
+                    break
+                if current >= minimum:
+                    invalid_ids.add(current)
+                agg += str(atom)
+            atom += 1
 
     return sum(invalid_ids)
 
