@@ -1,6 +1,3 @@
-def clamp(value, minimum, maximum):
-    return max(min(value, maximum), minimum)
-
 def solve_line(line, num_batteries):
     result = 0
     for (i, battery_str) in enumerate(line):
@@ -8,7 +5,7 @@ def solve_line(line, num_batteries):
         # 1 means ones digit, 2 means tens digit, etc.
         # we can't update more than len(line) - i digits,
         # since we need enough digits to fill up the rest of the number.
-        max_digit_to_update = clamp(len(line) - i, 1, num_batteries)
+        max_digit_to_update = min(len(line) - i, num_batteries)
         for digit_number in range(max_digit_to_update, 0, -1):
             # replace the digit at digit_number with battery,
             # and set all digits below to 0.
