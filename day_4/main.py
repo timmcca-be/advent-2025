@@ -43,6 +43,8 @@ def solve_part_2(input_lines):
     return len(removed_locations)
 
 def remove_recursively(connections, removed_locations, location):
+    if location in removed_locations:
+        return
     neighboring_rolls = connections[location] - removed_locations
     if len(neighboring_rolls) >= 4:
         return
