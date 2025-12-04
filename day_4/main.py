@@ -38,8 +38,7 @@ def solve_part_2(input_lines):
         neighboring_rolls = neighbors & locations
         connections[location] = neighboring_rolls
 
-        num_neighboring_rolls = len(neighboring_rolls)
-        if num_neighboring_rolls < 4:
+        if len(neighboring_rolls) < 4:
             queue.append(location)
 
     removed_locations = set(queue)
