@@ -6,12 +6,13 @@ def solve_part_1(input_lines):
                 locations.add((x, y))
 
     result = 0
-    for x, y in locations:
+    for location in locations:
+        x, y = location
         neighbors = set(
             (x + dx, y + dy)
             for dx in [-1, 0, 1]
             for dy in [-1, 0, 1]
-        ) - set([(x, y)])
+        ) - set([location])
         neighboring_rolls = neighbors & locations
         if len(neighboring_rolls) < 4:
             result += 1
@@ -25,25 +26,28 @@ def solve_part_2(input_lines):
             if character == "@":
                 locations.add((x, y))
 
-    result = 0
-    while True:
-        new_locations = set()
-        for x, y in locations:
-            neighbors = set(
-                (x + dx, y + dy)
-                for dx in [-1, 0, 1]
-                for dy in [-1, 0, 1]
-            ) - set([(x, y)])
-            neighboring_rolls = neighbors & locations
-            if len(neighboring_rolls) < 4:
-                result += 1
-            else:
-                new_locations.add((x, y))
-        if len(new_locations) == len(locations):
-            break
-        locations = new_locations
+    connections = dict()
+    for location in locations:
+        x, y = location
+        neighbors = set(
+            (x + dx, y + dy)
+            for dx in [-1, 0, 1]
+            for dy in [-1, 0, 1]
+        ) - set([location])
+        connections[location] = neighbors & locations
 
-    return result
+    removed_locations = set()
+    while True:
+        did_remove_any = False
+        for location in (locations - removed_locations):
+            remaining_connections = connections[location] - removed_locations
+            if len(remaining_connections) < 4:
+                removed_locations.add(location)
+                did_remove_any = True
+        if not did_remove_any:
+            break
+
+    return len(removed_locations)
 
 import time
 from pathlib import Path
