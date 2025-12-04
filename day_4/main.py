@@ -26,7 +26,7 @@ def solve_part_2(input_lines):
             if character == "@":
                 locations.add((x, y))
 
-    queue = set()
+    queue = []
     connections = dict()
     for location in locations:
         x, y = location
@@ -40,15 +40,15 @@ def solve_part_2(input_lines):
 
         num_neighboring_rolls = len(neighboring_rolls)
         if num_neighboring_rolls < 4:
-            queue.add(location)
+            queue.append(location)
 
-    removed_locations = queue.copy()
+    removed_locations = set(queue)
     while len(queue) > 0:
         location = queue.pop()
         for neighbor in connections[location] - removed_locations:
             if len(connections[neighbor] - removed_locations) < 4:
                 removed_locations.add(neighbor)
-                queue.add(neighbor)
+                queue.append(neighbor)
 
     return len(removed_locations)
 
