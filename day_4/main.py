@@ -26,7 +26,6 @@ def solve_part_2(input_lines):
             if character == "@":
                 locations.add((x, y))
 
-    queue = []
     connections = dict()
     for location in locations:
         x, y = location
@@ -35,21 +34,21 @@ def solve_part_2(input_lines):
             for dx in [-1, 0, 1]
             for dy in [-1, 0, 1]
         ) - set([location])
-        neighboring_rolls = neighbors & locations
-        connections[location] = neighboring_rolls
+        connections[location] = neighbors & locations
 
-        if len(neighboring_rolls) < 4:
-            queue.append(location)
-
-    removed_locations = set(queue)
-    while len(queue) > 0:
-        location = queue.pop()
-        for neighbor in connections[location] - removed_locations:
-            if len(connections[neighbor] - removed_locations) < 4:
-                removed_locations.add(neighbor)
-                queue.append(neighbor)
+    removed_locations = set()
+    for location in locations:
+        remove_recursively(connections, removed_locations, location)
 
     return len(removed_locations)
+
+def remove_recursively(connections, removed_locations, location):
+    neighboring_rolls = connections[location] - removed_locations
+    if len(neighboring_rolls) >= 4:
+        return
+    removed_locations.add(location)
+    for neighbor in neighboring_rolls:
+        remove_recursively(connections, removed_locations, neighbor)
 
 import time
 from pathlib import Path
