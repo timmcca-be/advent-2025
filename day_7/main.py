@@ -15,10 +15,12 @@ def solve_part_2(input_lines):
     result = 1
     beams = {input_lines[0].index("S"): 1}
     for line in input_lines[1:]:
-        for beam, count in beams.copy().items():
+        items = list(beams.copy().items())
+        items.sort(key = lambda item: item[0])
+        for beam, count in items:
             if line[beam] == "^":
                 result += count
-                del beams[beam]
+                beams[beam] -= count
                 beams[beam - 1] = count + beams.get(beam - 1, 0)
                 beams[beam + 1] = count + beams.get(beam + 1, 0)
 
@@ -47,5 +49,22 @@ with open(script_dir / "input_real.txt", "r") as file:
     lines = [line.rstrip("\n") for line in file]
     run_and_time("1 (real)", solve_part_1, lines)
     run_and_time("2 (real)", solve_part_2, lines)
+
+print()
+# this input catches a bug in my first version of this, which got the right
+# answer on the real input anyway!
+lines = """\
+...S...
+...|...
+...^...
+..|.|..
+..|.^..
+..||.|.
+..^^.|.
+.|||||.
+.|^^||.
+.|..||.""".split("\n")
+run_and_time("1 (test)", solve_part_1, lines)
+run_and_time("2 (test)", solve_part_2, lines)
 
 print()
