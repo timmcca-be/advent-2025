@@ -15,9 +15,7 @@ def solve_part_2(input_lines):
     result = 1
     beams = {input_lines[0].index("S"): 1}
     for line in input_lines[1:]:
-        items = list(beams.copy().items())
-        items.sort(key = lambda item: item[0])
-        for beam, count in items:
+        for beam, count in beams.copy().items():
             if line[beam] == "^":
                 result += count
                 # originally I had:
