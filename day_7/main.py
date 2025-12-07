@@ -20,6 +20,11 @@ def solve_part_2(input_lines):
         for beam, count in items:
             if line[beam] == "^":
                 result += count
+                # originally I had:
+                # del beams[beam]
+                # but if there's another splitter right next to this one, that
+                # could delete the beams that just moved into this column! we
+                # need to subtract count, not set the whole column to 0.
                 beams[beam] -= count
                 beams[beam - 1] = count + beams.get(beam - 1, 0)
                 beams[beam + 1] = count + beams.get(beam + 1, 0)
