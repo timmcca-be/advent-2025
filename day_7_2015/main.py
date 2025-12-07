@@ -2,12 +2,15 @@ import re
 
 set_pattern = r"^(?P<input>\S+) -> (?P<output>[a-z]+)$"
 not_pattern = r"^NOT (?P<input>\S+) -> (?P<output>[a-z]+)$"
-operator_pattern = r"^(?P<input1>\S+) (?P<operator>[A-Z]+) (?P<input2>\S+) -> (?P<output>[a-z]+)"
+operator_pattern = (
+    r"^(?P<input1>\S+) (?P<operator>[A-Z]+) (?P<input2>\S+)"
+    + r" -> (?P<output>[a-z]+)"
+)
 
 def get_value(wires, value):
     if value in wires:
         result = wires[value]
-        if type(result) is int:
+        if isinstance(result, int):
             return result
         output = result(wires)
         wires[value] = output
