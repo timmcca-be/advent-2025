@@ -1,4 +1,3 @@
-from queue import PriorityQueue
 from functools import reduce
 
 def get_distance_squared(a, b):
