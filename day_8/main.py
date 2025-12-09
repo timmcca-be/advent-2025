@@ -1,11 +1,10 @@
-import math
 from queue import PriorityQueue
 from functools import reduce
 
-def get_distance(a, b):
+def get_distance_squared(a, b):
     a_x, a_y, a_z = a
     b_x, b_y, b_z = b
-    return math.sqrt((a_x - b_x)**2 + (a_y - b_y)**2 + (a_z - b_z)**2)
+    return (a_x - b_x)**2 + (a_y - b_y)**2 + (a_z - b_z)**2
 
 def parse_junction_boxes(input_lines):
     junction_boxes = []
@@ -18,22 +17,20 @@ def parse_junction_boxes(input_lines):
 
     return junction_boxes
 
-def build_priority_queue(junction_boxes):
-    connections_queue = PriorityQueue()
+def build_ordered_queue(junction_boxes):
+    connections_queue = []
     for (i, box) in enumerate(junction_boxes):
         for other in junction_boxes[i+1:]:
-            distance = get_distance(box, other)
-            connections_queue.put((distance, (box, other)))
+            distance = get_distance_squared(box, other)
+            connections_queue.append((distance, (box, other)))
 
+    connections_queue.sort(key = lambda element: element[0])
     return connections_queue
 
 def solve_part_1(input_lines, num_connections):
     junction_boxes = parse_junction_boxes(input_lines)
-    connections_queue = build_priority_queue(junction_boxes)
-    connections = set()
-    for i in range(num_connections):
-        _, boxes = connections_queue.get()
-        connections.add(boxes)
+    connections_queue = build_ordered_queue(junction_boxes)
+    connections = set(boxes for _, boxes in connections_queue[:num_connections])
 
     connections_map = dict()
     for a, b in connections:
@@ -61,18 +58,19 @@ def build_circuit(connections_map, circuit, root):
 
 def solve_part_2(input_lines):
     junction_boxes = parse_junction_boxes(input_lines)
-    connections_queue = build_priority_queue(junction_boxes)
+    connections_queue = build_ordered_queue(junction_boxes)
 
     circuits = dict()
     for box in junction_boxes:
         circuits[box] = set([box])
 
-    while len(next(iter(circuits.values()))) < len(junction_boxes):
-        _, boxes = connections_queue.get()
+    for _, boxes in connections_queue:
         a, b = boxes
         if a in circuits[b]:
             continue
         circuits[a] |= circuits[b]
+        if len(circuits[a]) == len(junction_boxes):
+            break
         for box in circuits[b]:
             circuits[box] = circuits[a]
 
