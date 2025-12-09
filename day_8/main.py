@@ -6,6 +6,27 @@ def get_distance_squared(a, b):
     b_x, b_y, b_z = b
     return (a_x - b_x)**2 + (a_y - b_y)**2 + (a_z - b_z)**2
 
+def binsearch(keys, element):
+    start = 0
+    end = len(keys)
+    while start < end:
+        current = (end + start) // 2
+        if current != end and (keys[current] is None or element < keys[current]):
+            end = current
+        if keys[current] is not None and element > keys[current]:
+            start = current + 1
+
+    return start
+
+def insert_connection(distances, connections, distance, connection):
+    index = binsearch(distances, distance)
+    if index == len(distances):
+        return distances, connections
+    return (
+        distances[:index] + [distance] + distances[index:-1],
+        connections[:index] + [connection] + connections[index:-1]
+    )
+
 def parse_junction_boxes(input_lines):
     junction_boxes = []
     for line in input_lines:
@@ -29,8 +50,18 @@ def build_ordered_queue(junction_boxes):
 
 def solve_part_1(input_lines, num_connections):
     junction_boxes = parse_junction_boxes(input_lines)
-    connections_queue = build_ordered_queue(junction_boxes)
-    connections = set(boxes for _, boxes in connections_queue[:num_connections])
+
+    distances = [None] * num_connections
+    connections = [None] * num_connections
+    for (i, box) in enumerate(junction_boxes):
+        for other in junction_boxes[i+1:]:
+            distance = get_distance_squared(box, other)
+            distances, connections = insert_connection(
+                distances,
+                connections,
+                distance,
+                (box, other),
+            )
 
     connections_map = dict()
     for a, b in connections:
