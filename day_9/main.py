@@ -121,11 +121,12 @@ def solve_part_2(input_lines):
     max_area = 0
     for (i, a) in enumerate(elements):
         for b in elements[i+1:]:
+            new_area = area(a, b)
+            if new_area <= max_area:
+                continue
             if does_path_cross_lines(adjusted_boundaries, a, b):
                 continue
-            new_area = area(a, b)
-            if new_area > max_area:
-                max_area = new_area
+            max_area = new_area
 
     return max_area
 
